@@ -1,0 +1,2 @@
+# Keep the build script out of GitHub language stats
+scripts/** linguist-vendored
