@@ -584,6 +584,103 @@ def footer():
     return svg(W, H, "\n".join(body), css, "The funnel never ends")
 
 
+# ════════════════════════════════════════════════════════════════════════════
+# DEMO PREVIEW CARDS — browser frame + real screenshot + "try it live" cue
+# ════════════════════════════════════════════════════════════════════════════
+SHOTS = ROOT / "scripts" / "shots"
+
+
+def jpeg_size(data):
+    i = 2
+    while i < len(data):
+        if data[i] != 0xFF:
+            i += 1
+            continue
+        marker = data[i + 1]
+        seg = int.from_bytes(data[i + 2:i + 4], "big")
+        if marker in (0xC0, 0xC1, 0xC2):
+            return int.from_bytes(data[i + 7:i + 9], "big"), int.from_bytes(data[i + 5:i + 7], "big")
+        i += 2 + seg
+    raise ValueError("no JPEG size")
+
+
+def demo_card(slug, shot, idx):
+    W, CH, VH = 640, 40, 400  # width, chrome height, viewport height
+    H = CH + VH
+    raw = (SHOTS / shot).read_bytes()
+    iw, ih = jpeg_size(raw)
+    img_h = W * ih / iw
+    b64 = base64.b64encode(raw).decode()
+    css, body = [], []
+    body.append(
+        f'<defs><clipPath id="win"><path d="M0 {CH}H{W}V{H - 12}A12 12 0 0 1 {W - 12} {H}H12A12 12 0 0 1 0 {H - 12}Z"/></clipPath>'
+        f'<clipPath id="all"><rect width="{W}" height="{H}" rx="12"/></clipPath>'
+        f'<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="{INK}" stop-opacity="0"/>'
+        f'<stop offset="1" stop-color="{INK}" stop-opacity=".78"/></linearGradient></defs>'
+    )
+    body.append(f'<rect width="{W}" height="{H}" rx="12" fill="{PAPER}"/>')
+    # screenshot: long pages scroll, short ones drift slowly
+    scroll = img_h - VH
+    if scroll > 40:
+        css.append(
+            f"@keyframes pan{{0%,14%{{transform:translateY(0)}}50%,64%{{transform:translateY(-{scroll:.0f}px)}}100%{{transform:translateY(0)}}}}"
+            f".pan{{animation:pan 16s cubic-bezier(.65,0,.35,1) infinite}}"
+        )
+    else:
+        css.append(
+            "@keyframes pan{0%{transform:scale(1)}100%{transform:scale(1.045)}}"
+            ".pan{transform-box:fill-box;transform-origin:50% 0;animation:pan 9s ease-in-out infinite alternate}"
+        )
+    body.append(
+        f'<g clip-path="url(#win)"><g class="pan"><image href="data:image/jpeg;base64,{b64}" x="0" y="{CH}" width="{W}" height="{img_h:.1f}"/></g>'
+        f'<rect y="{CH}" width="{W}" height="{VH}" fill="url(#fade)"/></g>'
+    )
+    # browser chrome
+    body.append(f'<path d="M0 {CH}V12A12 12 0 0 1 12 0H{W - 12}A12 12 0 0 1 {W} 12V{CH}Z" fill="{PAPER2}"/>')
+    body.append(f'<line x1="0" y1="{CH}" x2="{W}" y2="{CH}" stroke="{HAIR}"/>')
+    for i, c in enumerate(["#e9ecef33", "#e9ecef22", "#e9ecef22"]):
+        body.append(f'<circle cx="{20 + i * 15}" cy="20" r="4.5" fill="{c}"/>')
+    body.append(f'<rect x="78" y="10" width="{W - 178}" height="20" rx="10" fill="{PAPER}" stroke="{HAIR}"/>')
+    body.append(T(92, 24, f"zeeshan-shakeel.com/projects/{slug}", "mono dim", 10.5))
+    body.append(f'<circle cx="{W - 76}" cy="20" r="3.5" fill="{ACCENT}" class="live"/>')
+    body.append(f'<circle cx="{W - 76}" cy="20" r="3.5" fill="none" stroke="{ACCENT}" class="ring"/>')
+    body.append(T(W - 66, 24, "LIVE", "pix acc", 10.5))
+    css.append(
+        "@keyframes live{0%,100%{opacity:1}50%{opacity:.35}}.live{animation:live 1.6s ease-in-out infinite}"
+        "@keyframes ring{0%{transform:scale(1);opacity:.9}100%{transform:scale(3.2);opacity:0}}"
+        ".ring{transform-box:fill-box;transform-origin:center;animation:ring 1.6s ease-out infinite}"
+    )
+    # "try it live" button + cursor that glides over and clicks it
+    label = "TRY IT LIVE ↗"
+    bw = text_width(label, PIX, 12) + 32
+    bx, by = W - bw - 18, H - 50
+    cx, cy = bx + bw * 0.62, by + 20
+    d = f"{idx * 0.7:.1f}s"
+    body.append(
+        f'<g class="btn" style="animation-delay:{d}"><rect x="{bx:.1f}" y="{by}" width="{bw:.1f}" height="32" rx="6" fill="{ACCENT}"/>'
+        + T(bx + 16, by + 20.5, label, "pix", 12, extra=f'fill="{INK}"') + "</g>"
+    )
+    body.append(
+        f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="6" fill="none" stroke="{BONE}" stroke-width="1.5" class="clk" style="animation-delay:{d}"/>'
+    )
+    body.append(
+        f'<g class="cur" style="animation-delay:{d}"><path transform="translate({cx:.1f} {cy:.1f})" '
+        f'd="M0 0L0 17L4.5 12.8L7.6 19.6L10.4 18.4L7.4 11.8L13.2 11.4Z" fill="{BONE}" stroke="{INK}" stroke-width="1.2" stroke-linejoin="round"/></g>'
+    )
+    css.append(
+        "@keyframes cur{0%{transform:translate(-150px,-120px);opacity:0}12%{opacity:1}40%{transform:translate(0,0)}"
+        "44%{transform:translate(0,0) scale(.88)}48%{transform:translate(0,0) scale(1)}80%{transform:translate(0,0);opacity:1}"
+        "92%,100%{transform:translate(0,0);opacity:0}}"
+        ".cur{animation:cur 5s cubic-bezier(.3,.7,.3,1) infinite}"
+        "@keyframes clk{0%,43%{transform:scale(0);opacity:0}44%{transform:scale(.5);opacity:1}62%,100%{transform:scale(3.4);opacity:0}}"
+        ".clk{transform-box:fill-box;transform-origin:center;opacity:0;animation:clk 5s ease-out infinite}"
+        "@keyframes btn{0%,43%{transform:scale(1)}45%{transform:scale(.95)}50%,100%{transform:scale(1)}}"
+        ".btn{transform-box:fill-box;transform-origin:center;animation:btn 5s ease-out infinite}"
+    )
+    body.append(f'<rect x=".5" y=".5" width="{W - 1}" height="{H - 1}" rx="12" fill="none" stroke="{HAIR}"/>')
+    return svg(W, H, "\n".join(body), "\n".join(css), f"Live demo preview: zeeshan-shakeel.com/projects/{slug}")
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     files = {
@@ -595,6 +692,10 @@ def main():
         "h-03-desire.svg": header("03", "DESIRE", "get wanted", "what i build", 2),
         "h-04-action.svg": header("04", "ACTION", "get chosen", "let's talk", 3),
         "footer.svg": footer(),
+        "demo-campaign-builder.svg": demo_card("campaign-builder", "campaign-builder-800.jpg", 0),
+        "demo-seo-engine.svg": demo_card("seo-engine", "seo-engine-800.jpg", 1),
+        "demo-performance-dashboard.svg": demo_card("performance-dashboard", "performance-dashboard-2000.jpg", 2),
+        "demo-content-calendar.svg": demo_card("content-calendar", "content-calendar-800.jpg", 3),
     }
     for name, data in files.items():
         (OUT / name).write_text(data, encoding="utf-8")

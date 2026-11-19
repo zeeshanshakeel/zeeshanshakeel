@@ -41,14 +41,18 @@
 
 <img src="./assets/h-03-desire.svg" width="100%" alt="03 Desire — get wanted" />
 
+<p align="center"><sub><b>4 live demos</b> · click any preview to try it yourself · no login needed</sub></p>
+
 <table>
   <tr>
     <td width="50%" valign="top">
+      <a href="https://zeeshan-shakeel.com/projects/campaign-builder"><img src="./assets/demo-campaign-builder.svg" width="100%" alt="AI Campaign Builder live demo preview — click to try it" /></a><br />
       <b>AI Campaign Builder</b>&nbsp;&nbsp;<code>strategy</code><br />
       <sub>A brief in, an 11-section campaign out. Ad copy with live Google character limits, export to PDF.</sub><br /><br />
       <a href="https://zeeshan-shakeel.com/projects/campaign-builder"><img src="https://img.shields.io/badge/try%20it%20live-↗-9fc0d8?style=flat-square&labelColor=16181b" alt="Try AI Campaign Builder" /></a>
     </td>
     <td width="50%" valign="top">
+      <a href="https://zeeshan-shakeel.com/projects/seo-engine"><img src="./assets/demo-seo-engine.svg" width="100%" alt="SEO Content Engine live demo preview — click to try it" /></a><br />
       <b>SEO Content Engine</b>&nbsp;&nbsp;<code>search</code><br />
       <sub>Keyword clusters sorted by intent, an editorial queue, title tags, meta descriptions and a 30-day plan.</sub><br /><br />
       <a href="https://zeeshan-shakeel.com/projects/seo-engine"><img src="https://img.shields.io/badge/try%20it%20live-↗-9fc0d8?style=flat-square&labelColor=16181b" alt="Try SEO Content Engine" /></a>
@@ -56,11 +60,13 @@
   </tr>
   <tr>
     <td width="50%" valign="top">
+      <a href="https://zeeshan-shakeel.com/projects/performance-dashboard"><img src="./assets/demo-performance-dashboard.svg" width="100%" alt="Marketing Dashboard live demo preview — click to try it" /></a><br />
       <b>Marketing Dashboard</b>&nbsp;&nbsp;<code>analytics</code><br />
       <sub>180 days of campaign data turned into budget calls. ROAS, CPC, CTR and CPL worked out from real totals, with three budget scenarios.</sub><br /><br />
       <a href="https://zeeshan-shakeel.com/projects/performance-dashboard"><img src="https://img.shields.io/badge/try%20it%20live-↗-9fc0d8?style=flat-square&labelColor=16181b" alt="Try Marketing Dashboard" /></a>
     </td>
     <td width="50%" valign="top">
+      <a href="https://zeeshan-shakeel.com/projects/content-calendar"><img src="./assets/demo-content-calendar.svg" width="100%" alt="Content Calendar live demo preview — click to try it" /></a><br />
       <b>Content Calendar</b>&nbsp;&nbsp;<code>content</code><br />
       <sub>A 30-day plan across Instagram, TikTok and LinkedIn built on six content pillars. Exports to CSV and PDF.</sub><br /><br />
       <a href="https://zeeshan-shakeel.com/projects/content-calendar"><img src="https://img.shields.io/badge/try%20it%20live-↗-9fc0d8?style=flat-square&labelColor=16181b" alt="Try Content Calendar" /></a>
